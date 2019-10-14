@@ -1,6 +1,8 @@
 import uuid from 'uuid/v4';
 
 const amount = 1000;
+const fifty_monthly = 'prod_CvTEfSL5zvp8j0';
+
 const $messageBox = document.getElementById('messageBox');
 const $button = document.querySelector('button');
 
