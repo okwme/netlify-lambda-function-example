@@ -8,7 +8,6 @@ const headers = {
   "Access-Control-Allow-Headers": "Content-Type"
 };
 
-
 exports.handler = async function(event) {
   // We only care to do anything if this is our POST request.
   if (event.httpMethod !== "POST") {
@@ -23,11 +22,9 @@ exports.handler = async function(event) {
   const data = JSON.parse(event.body);
 
   // Make sure we have all required data. Otherwise, get outta here.
-  if (!data.token || !data.amount || !data.idempotency_key) {
+  if (!data.plan) {
     const message = "Required information is missing!";
-
     console.error(message);
-
     return {
       statusCode,
       headers,
@@ -38,19 +35,18 @@ exports.handler = async function(event) {
     };
   }
 
-  let charge;
+  const plan = data.plan
+  let session;
 
   try {
-    charge = await stripe.charges.create(
+    session = await stripe.checkout.sessions.create(
       {
-        currency: "usd",
-        amount: data.amount,
-        source: data.token.id,
-        receipt_email: data.token.email,
-        description: `charge for a widget`
-      },
-      {
-        idempotency_key: data.idempotency_key
+        payment_method_types: ['card'],
+        subscription_data: {
+            items: [{plan}],
+        },
+        success_url: process.env.WEBSITE + '#thankyou',
+        cancel_url:  process.env.WEBSITE,
       }
     );
   } catch (e) {
@@ -65,15 +61,16 @@ exports.handler = async function(event) {
       })
     };
   }
-  console.log({charge})
-  const status = charge.status;
+
+  console.log({session})
+  const status = session.status;
 
   return {
     statusCode,
     headers,
     body: JSON.stringify({
       status,
-      message: "Charge successfully created!"
+      checkoutSessionId: session.id
     })
   };
 };

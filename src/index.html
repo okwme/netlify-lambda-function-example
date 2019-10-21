@@ -59,15 +59,22 @@
   <body>
 
     <main>
-      <h1>Process a Stripe Charge w/ a Netlify Lambda Function</h1>
-      <p>Use the card number <strong>4242424242424242</strong> to submit a test payment. Click <a href="https://macarthur.me/posts/building-a-lambda-function-with-netlify">here</a> to see the full tutorial on setting up this function yourself.</p>
-      <button>Click to Buy! <strong>$10</strong></button>
+
+      <h1>Please select a plan</h1>
+      <div>
+        <select id="plan_select">
+            <option value="10_monthly">$10 per month</option>
+            <option value="20_monthly">$20 per month</option>
+            <option value="50_monthly" selected>$50 per month</option>
+          </select>
+      </div>
+      <br>
+      <button>Submit</button>
       <div id="messageBox">
         <h2></h2>
       </div>
     </main>
-
-    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <script src="./bundle.js"></script>
   </body>
 
